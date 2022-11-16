@@ -1,5 +1,5 @@
 import { _DATA_FILE_ } from "../assets/config";
-import fs from "fs";
+import fs, { readFileSync } from "fs";
 import { Employee, Employees } from "../assets/types";
 import { guid, writeToFile } from "../assets/helpers";
 
@@ -38,23 +38,42 @@ export const deleteE = (employeeID: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     let employeeHasBeenDeleted = false;
 
-    const data = JSON.parse(fs.readFileSync(_DATA_FILE_, "utf-8"));
-    let employees: Employees = data.users;
+    const employees: Employees = JSON.parse(
+      fs.readFileSync(_DATA_FILE_, "utf-8")
+    );
 
     const newEmployees = employees.filter(
       (employee: Employee) => employee.id != employeeID
     );
 
     if (newEmployees.length < employees.length) {
-      data.users = newEmployees;
       employeeHasBeenDeleted = true;
+      writeToFile(_DATA_FILE_, newEmployees);
     }
 
-    writeToFile(_DATA_FILE_, data);
     resolve(employeeHasBeenDeleted);
   });
 };
-
+export const deleteMultiple = (employeesID: string): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    let employeesHaveBeenDeleted = false;
+    const employeesToBeDeleted: [string] = JSON.parse(employeesID);
+    const employees: Employees = JSON.parse(
+      fs.readFileSync(_DATA_FILE_, "utf-8")
+    );
+    const newEmployees: Employees = employees.filter(
+      (employee) => !employeesToBeDeleted.includes(employee.id)
+    );
+    if (
+      newEmployees.length ===
+      employees.length - employeesToBeDeleted.length
+    ) {
+      employeesHaveBeenDeleted = true;
+      writeToFile(_DATA_FILE_, newEmployees);
+    }
+    resolve(employeesHaveBeenDeleted);
+  });
+};
 export const update = (
   employeeID: string,
   dataToReplace: {

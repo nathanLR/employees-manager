@@ -1,0 +1,15 @@
+.actions {
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  &__title {
+    background-color: white;
+    border: 1px solid #eee;
+    padding: 15px 20px;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+  &__actions > * {
+    margin-left: 10px;
+  }
+}

@@ -4,6 +4,7 @@ import {
   createEmployee,
   deleteEmployee,
   updateEmployee,
+  deleteEmployees,
 } from "./controller";
 
 const Router = (req, res) => {
@@ -57,6 +58,8 @@ const Router = (req, res) => {
     if (req.url.match(/\/api\/employees\/(\w{4}-?){3}/)) {
       const requestID = req.url.split("/")[3];
       deleteEmployee(req, res, requestID);
+    } else if (req.url === "/api/employees") {
+      deleteEmployees(req, res);
     } else {
       res.statusCode = 404;
 

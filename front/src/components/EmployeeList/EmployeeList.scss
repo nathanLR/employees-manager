@@ -1,0 +1,42 @@
+.employeeList {
+  &__header {
+    margin-bottom: 40px;
+    height: 50px;
+    background-color: #001f3f;
+    color: white;
+
+    p {
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+  }
+  &__item {
+    margin-bottom: 10px;
+    height: 40px;
+
+    border: 1px solid #eee;
+    background-color: white;
+    transition: background-color 0.2s ease;
+    &:hover {
+      background-color: #eee;
+    }
+  }
+  li {
+    border-radius: 5px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    p.checkbox {
+      width: 10%;
+      input {
+        border: 1px solid #001f3f;
+      }
+    }
+    p {
+      text-align: center;
+    }
+    p:not(p.checkbox) {
+      width: calc(90% / 4);
+    }
+  }
+}

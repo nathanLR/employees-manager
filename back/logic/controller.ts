@@ -1,6 +1,13 @@
 import { getRequestData } from "../assets/helpers";
 import { Employee } from "../assets/types";
-import { create, findAll, findById, deleteE, update } from "./model";
+import {
+  create,
+  findAll,
+  findById,
+  deleteE,
+  update,
+  deleteMultiple,
+} from "./model";
 
 export const getEmployees = async (req, res): Promise<void> => {
   try {
@@ -62,8 +69,26 @@ export const deleteEmployee = async (req, res, employeeID): Promise<void> => {
     console.log(error);
   }
 };
+export const deleteEmployees = async (req, res): Promise<void> => {
+  try {
+    const employeesToBeDeleted = await getRequestData(req);
+    if (deleteMultiple(employeesToBeDeleted)) {
+      res.writeHead(201, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "employees deleted successfully" }));
+    } else {
+      res.writeHead(404, { "Content-type": "application/json" });
+      res.end(
+        JSON.stringify({
+          message: "Some of the employees might have not been found !",
+        })
+      );
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-export const updateEmployee = async (req, res, employeeID) => {
+export const updateEmployee = async (req, res, employeeID): Promise<void> => {
   try {
     const employee: Employee = await findById(employeeID);
     if (employee) {
@@ -78,22 +103,16 @@ export const updateEmployee = async (req, res, employeeID) => {
       const updatedEmployee = await update(employeeID, dataToReplace);
       if (updatedEmployee) {
         res.writeHead(200, { "Content-type": "application/json" });
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
-        res.setHeader("Access-Control-Max-Age", 2592000);
+
         res.end(JSON.stringify(updatedEmployee));
       } else {
         res.writeHead(404, { "Content-type": "application/json" });
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
-        res.setHeader("Access-Control-Max-Age", 2592000);
+
         res.end(JSON.stringify({ message: "Something went wrong !" }));
       }
     } else {
       res.writeHead(404, { "Content-type": "application/json" });
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
-      res.setHeader("Access-Control-Max-Age", 2592000);
+
       res.end(JSON.stringify({ message: "Employee not found !" }));
     }
   } catch (error) {
